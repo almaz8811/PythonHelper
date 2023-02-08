@@ -18,22 +18,22 @@ if __name__ == '__main__':     # Запускает main(), если файл н
 ```
 
 
-List
+List (Список)
 ----
 ```python
-<list> = <list>[<срез>]         # Или: <list>[от_индекса : до_индекса : ±с_шагом]
+<list> = <list>[<slice>]       # Или: <list>[from_inclusive : to_exclusive : ±step]
 ```
 
 ```python
-<list>.append(<элемент>)        # Или: <list> += [<элемент>]
-<list>.extend(<коллекция>)      # Или: <list> += <коллекция>
+<list>.append(<el>)            # Или: <list> += [<el>]
+<list>.extend(<collection>)    # Или: <list> += <collection>
 ```
 
 ```python
-<list>.sort()                   # Сортировка по возрастанию.
-<list>.reverse()                # Сортировка в обратном порядке.
-<list> = sorted(<коллекция>)    # Возвращает новый сортированный список.
-<iter> = reversed(<список>)     # Возвращает интератор в обратном порядке.
+<list>.sort()                  # Сортировка по возрастанию.
+<list>.reverse()               # Сортировка в обратном порядке.
+<list> = sorted(<collection>)  # Возвращает новый, сортированный список.
+<iter> = reversed(<list>)      # Возвращает отбатный интератор.
 ```
 
 ```python
