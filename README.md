@@ -13,7 +13,7 @@
 Main
 ----
 ```python
-if __name__ == '__main__':     # Runs main() if file wasn't imported.
+if __name__ == '__main__':     # Запускает main(), если файл не был импортирован.
     main()
 ```
 
@@ -21,19 +21,19 @@ if __name__ == '__main__':     # Runs main() if file wasn't imported.
 List
 ----
 ```python
-<list> = <list>[<slice>]       # Or: <list>[from_inclusive : to_exclusive : ±step]
+<list> = <list>[<срез>]         # Или: <list>[от_индекса : до_индекса : ±с_шагом]
 ```
 
 ```python
-<list>.append(<el>)            # Or: <list> += [<el>]
-<list>.extend(<collection>)    # Or: <list> += <collection>
+<list>.append(<элемент>)        # Или: <list> += [<элемент>]
+<list>.extend(<коллекция>)      # Или: <list> += <коллекция>
 ```
 
 ```python
-<list>.sort()                  # Sorts in ascending order.
-<list>.reverse()               # Reverses the list in-place.
-<list> = sorted(<collection>)  # Returns a new sorted list.
-<iter> = reversed(<list>)      # Returns reversed iterator.
+<list>.sort()                   # Сортировка по возрастанию.
+<list>.reverse()                # Сортировка в обратном порядке.
+<list> = sorted(<коллекция>)    # Возвращает новый сортированный список.
+<iter> = reversed(<список>)     # Возвращает интератор в обратном порядке.
 ```
 
 ```python
