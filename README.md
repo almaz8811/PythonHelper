@@ -58,7 +58,7 @@ list_of_chars    = list(<str>)
 ```
 
 
-Dictionary
+Dictionary (Словари)
 ----------
 ```python
 <view> = <dict>.keys()                          # Coll. of keys that reflects changes.
@@ -105,17 +105,17 @@ Set
 ```
 
 ```python
-<set>.add(<el>)                                 # Or: <set> |= {<el>}
-<set>.update(<collection> [, ...])              # Or: <set> |= <set>
+<set>.add(<el>)                                 # Или: <set> |= {<el>}
+<set>.update(<collection> [, ...])              # Или: <set> |= <set>
 ```
 
 ```python
-<set>  = <set>.union(<coll.>)                   # Or: <set> | <set>
-<set>  = <set>.intersection(<coll.>)            # Or: <set> & <set>
-<set>  = <set>.difference(<coll.>)              # Or: <set> - <set>
-<set>  = <set>.symmetric_difference(<coll.>)    # Or: <set> ^ <set>
-<bool> = <set>.issubset(<coll.>)                # Or: <set> <= <set>
-<bool> = <set>.issuperset(<coll.>)              # Or: <set> >= <set>
+<set>  = <set>.union(<coll.>)                   # Или: <set> | <set>
+<set>  = <set>.intersection(<coll.>)            # Или: <set> & <set>
+<set>  = <set>.difference(<coll.>)              # Или: <set> - <set>
+<set>  = <set>.symmetric_difference(<coll.>)    # Или: <set> ^ <set>
+<bool> = <set>.issubset(<coll.>)                # Или: <set> <= <set>
+<bool> = <set>.issuperset(<coll.>)              # Или: <set> >= <set>
 ```
 
 ```python
@@ -137,8 +137,8 @@ Tuple
 **Tuple is an immutable and hashable list.**
 ```python
 <tuple> = ()                                # Empty tuple.
-<tuple> = (<el>,)                           # Or: <el>,
-<tuple> = (<el_1>, <el_2> [, ...])          # Or: <el_1>, <el_2> [, ...]
+<tuple> = (<el>,)                           # Или: <el>,
+<tuple> = (<el_1>, <el_2> [, ...])          # Или: <el_1>, <el_2> [, ...]
 ```
 
 ### Named Tuple
