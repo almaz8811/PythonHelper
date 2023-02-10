@@ -31,9 +31,9 @@ List (Список)
 
 ```python
 <list>.sort()                  # Сортировка по возрастанию.
-<list>.reverse()               # Сортировка в обратном порядке.
+<list>.reverse()               # Сортировка в обратном порядке. Или: <list>.sort(reverse=True)
 <list> = sorted(<collection>)  # Возвращает новый, сортированный список.
-<iter> = reversed(<list>)      # Возвращает отбатный интератор.
+<iter> = reversed(<list>)      # Возвращает отбатный интератор. Или: <list>.sorted(reverse=True)
 ```
 
 ```python
@@ -45,45 +45,45 @@ flatter_list     = list(itertools.chain.from_iterable(<list>))
 product_of_elems = functools.reduce(lambda out, el: out * el, <collection>)
 list_of_chars    = list(<str>)
 ```
-* **For details about sorted(), min() and max() see [sortable](#sortable).**
-* **Module [operator](#operator) provides functions itemgetter() and mul() that offer the same functionality as [lambda](#lambda) expressions above.**
+* **Подробнее о  sorted(), min() и max() смотри [sortable](#sortable).**
+* **Модуль [operator](#operator) предоставляет функции itemgetter() и mul(), которые предлагают ту же функциональность, что и вышеприведенные [lambda](#lambda)-выражения.**
 
 ```python
-<list>.insert(<int>, <el>)     # Inserts item at index and moves the rest to the right.
-<el>  = <list>.pop([<int>])    # Removes and returns item at index or from the end.
-<int> = <list>.count(<el>)     # Returns number of occurrences. Also works on strings.
-<int> = <list>.index(<el>)     # Returns index of the first occurrence or raises ValueError.
-<list>.remove(<el>)            # Removes first occurrence of the item or raises ValueError.
-<list>.clear()                 # Removes all items. Also works on dictionary and set.
+<list>.insert(<int>, <el>)     # Вставляет элемент по индексу и перемещает остальные вправо.
+<el>  = <list>.pop([<int>])    # Удаляет элемент по индексу и возвращает его или последний элемент.
+<int> = <list>.count(<el>)     # Возвращает количество вхождений. Также работает на strings.
+<int> = <list>.index(<el>)     # Возвращает индекс первого вхождения или вызывает ValueError.
+<list>.remove(<el>)            # Удаляет первое вхождение элемента или вызывает ValueError.
+<list>.clear()                 # Удаляет все элементы. Также работает со словарем (dictionary) и набором (set).
 ```
 
 
 Dictionary (Словари)
 ----------
 ```python
-<view> = <dict>.keys()                          # Coll. of keys that reflects changes.
-<view> = <dict>.values()                        # Coll. of values that reflects changes.
-<view> = <dict>.items()                         # Coll. of key-value tuples that reflects chgs.
+<view> = <dict>.keys()                          # Получает список всех ключей словаря.
+<view> = <dict>.values()                        # Получает список всех значений словаря.
+<view> = <dict>.items()                         # Получает кортеж всех "ключ-значение".
 ```
 
 ```python
-value  = <dict>.get(key, default=None)          # Returns default if key is missing.
-value  = <dict>.setdefault(key, default=None)   # Returns and writes default if key is missing.
-<dict> = collections.defaultdict(<type>)        # Returns a dict with default value of type.
-<dict> = collections.defaultdict(lambda: 1)     # Returns a dict with default value 1.
+value  = <dict>.get(key, default=None)          # Возвращает значение по умолчанию, если ключ отсутствует.
+value  = <dict>.setdefault(key, default=None)   # Возвращает и записывает значение по умолчанию, если ключ отсутствует.
+<dict> = collections.defaultdict(<type>)        # Возвращает словарь со значением <type> по умолчанию.
+<dict> = collections.defaultdict(lambda: 1)     # Возвращает словарь со значением по умолчанию 1.
 ```
 
 ```python
-<dict> = dict(<collection>)                     # Creates a dict from coll. of key-value pairs.
-<dict> = dict(zip(keys, values))                # Creates a dict from two collections.
-<dict> = dict.fromkeys(keys [, value])          # Creates a dict from collection of keys.
+<dict> = dict(<collection>)                     # Создает словарь из коллекции пар ключ-значение.
+<dict> = dict(zip(keys, values))                # Создает словарь из двух коллекций.
+<dict> = dict.fromkeys(keys [, value])          # Создает словарь из набора ключей.
 ```
 
 ```python
-<dict>.update(<dict>)                           # Adds items. Replaces ones with matching keys.
-value = <dict>.pop(key)                         # Removes item or raises KeyError.
-{k for k, v in <dict>.items() if v == value}    # Returns set of keys that point to the value.
-{k: v for k, v in <dict>.items() if k in keys}  # Returns a dictionary, filtered by keys.
+<dict>.update(<dict>)                           # Добавляет элементы. Заменяет их соответствующими ключами.
+value = <dict>.pop(key)                         # Удаляет элемент или вызывает KeyError.
+{k for k, v in <dict>.items() if v == value}    # Возвращает набор ключей, указывающих на значение.
+{k: v for k, v in <dict>.items() if k in keys}  # Возвращает словарь, фильтруется по ключам.
 ```
 
 ### Counter
@@ -98,10 +98,10 @@ Counter({'blue': 3, 'red': 2, 'yellow': 1})
 ```
 
 
-Set
+Set (Множества)
 ---
 ```python
-<set> = set()                                   # `{}` returns a dictionary.
+<set> = set()                                   # `{}` возвращает словарь.
 ```
 
 ```python
@@ -119,30 +119,32 @@ Set
 ```
 
 ```python
-<el> = <set>.pop()                              # Raises KeyError if empty.
-<set>.remove(<el>)                              # Raises KeyError if missing.
-<set>.discard(<el>)                             # Doesn't raise an error.
+<el> = <set>.pop()                              # Вызывает KeyError, если пусто.
+<set>.remove(<el>)                              # Вызывает KeyError, если отсутствует.
+<set>.discard(<el>)                             # Не вызывает ошибку.
 ```
 
-### Frozen Set
-* **Is immutable and hashable.**
-* **That means it can be used as a key in a dictionary or as an element in a set.**
+### Frozen Set (Неизменяемое множество)
+* **Является неизменным и хешируемым.**
+* **Можно сказать, что это смесь множества и кортежа.**
+* **Это означает, что его можно использовать как ключ в словаре или как элемент в множестве.**
 ```python
 <frozenset> = frozenset(<collection>)
 ```
 
 
-Tuple
+Tuple (Кортеж)
 -----
-**Tuple is an immutable and hashable list.**
+**Tuple - это неизменяемый и хешируемый список.**
 ```python
-<tuple> = ()                                # Empty tuple.
+<tuple> = ()                                # Пустой кортеж.
 <tuple> = (<el>,)                           # Или: <el>,
 <tuple> = (<el_1>, <el_2> [, ...])          # Или: <el_1>, <el_2> [, ...]
 ```
 
-### Named Tuple
-**Tuple's subclass with named elements.**
+### Именованный кортеж
+**Подкласс Tuple с именованными элементами.**
+**Из него можно получить элемент как по индексу, так и по имени.**
 
 ```python
 >>> from collections import namedtuple
@@ -158,13 +160,13 @@ Point(x=1, y=2)
 ```
 
 
-Range
+Range (Диапазон)
 -----
-**Immutable and hashable sequence of integers.**
+**Неизменяемая и хешируемая последовательность целых чисел.**
 ```python
-<range> = range(stop)                       # range(to_exclusive)
-<range> = range(start, stop)                # range(from_inclusive, to_exclusive)
-<range> = range(start, stop, ±step)         # range(from_inclusive, to_exclusive, ±step_size)
+<range> = range(stop)                       # Диапазон(to_exclusive)
+<range> = range(start, stop)                # Диапазон(from_inclusive, to_exclusive)
+<range> = range(start, stop, ±step)         # Диапазон(from_inclusive, to_exclusive, ±step_size)
 ```
 
 ```python
@@ -175,8 +177,15 @@ Range
 
 Enumerate
 ---------
+**Принимает список и возвращает нумерованный кортеж.**
 ```python
-for i, el in enumerate(<collection> [, i_start]):
+for i, el in enumerate(<collection> [, i_start]):   # Возвращает нумерованный кортеж с нумерацией от <i_start>
+    ...
+```
+```python
+names = ["John", "Jane", "Doe"]
+enumNames = enumerate(names)
+print(list(enumNames))  # [(0, 'John'), (1, 'Jane'), (2, 'Doe')]
     ...
 ```
 
