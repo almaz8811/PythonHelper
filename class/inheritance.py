@@ -1,4 +1,5 @@
-# inheritence - наследование, это механизм получения доступа к данным и поведению своего предка
+# inheritence - наследование, это механизм получения доступа к данным и поведению своего предка, и расширению
+# (изменению поведения) классов, не меняя код
 
 class Employee:
     def __init__(self, name, salary, bonus):
@@ -28,6 +29,10 @@ class CEO(Employee):
     def __init__(self, name):
         super().__init__(name, 105000, 100)
 
+    def calculate_total_bonus(self):  # Переписывает метод класса
+        return 200_000
+
+
 # class CEO:
 #     def __init__(self, name):
 #         self.name = name
@@ -41,6 +46,10 @@ class CEO(Employee):
 #         return f'CEO {self.name}, salary={self.salary}, bonus={self.bonus}%,' \
 #                f' total bonus= {self.calculate_total_bonus()} rub'
 
+def calc_bonuses(employees: list[Employee]):
+    for employee in employees:
+        print(f'Calc bonus for {employee.name}, it is = {employee.calculate_total_bonus()}')
+
 
 if __name__ == '__main__':
     masha = Cleaner('Maria Ivanovna')
@@ -49,3 +58,5 @@ if __name__ == '__main__':
     print(grisha)
     ivan_palich = CEO('Ivan Pavlovich')
     print(ivan_palich)
+    a_list = [masha, grisha, ivan_palich]
+    calc_bonuses(a_list)
