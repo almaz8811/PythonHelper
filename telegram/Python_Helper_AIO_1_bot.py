@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 import asyncio
+import os
 
 
 async def get_start(message: Message, bot: Bot):
@@ -10,7 +11,7 @@ async def get_start(message: Message, bot: Bot):
 
 
 async def start():
-    bot = Bot(token='6222278023:AAFAoa3sUFSRFKqbSlGypKZ34ngz8ccmb0Q')
+    bot = Bot(token=os.getenv('TOKEN'))
     dp = Dispatcher(bot)
     dp.register_message_handler(get_start)
     try:
