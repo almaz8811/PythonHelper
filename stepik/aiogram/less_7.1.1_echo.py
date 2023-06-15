@@ -25,6 +25,11 @@ async def process_help_command(message: Message):
     await message.answer('Напиши мне что-нибудь в ответ и я пришлю тебе твое сообщение')
 
 
+@dp.message(Command(commands=['id']))
+async def process_help_command(message: Message):
+    await message.answer(message.from_user.id)
+
+
 # Этот хэндлер будет срабатывать на любые ваши сообщения
 # кроме команд '/start' и '/help'
 @dp.message()
