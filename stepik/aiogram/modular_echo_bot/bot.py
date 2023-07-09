@@ -1,15 +1,23 @@
-from config_data.config import load_config
+import asyncio
+from aiogram import Bot, Dispatcher
+from config_data.config import Config, load_config
+from handlers import other_handlers, user_handlers
 
-config = load_config('.env')
-bot_token = config.tg_bot.token  # Сохраняем token в переменную bot_token
-super_admin = config.tg_bot.admin_ids  # Сохраняем ID админа в переменную super_admin
 
-# Выводим значения полей экземпляра класса Config на печать,
-# чтобы убедиться, что все данные, получаемые из переменных окружения, доступны
-print('BOT_TOKEN:', config.tg_bot.token)
-print('ADMIN_IDS:', config.tg_bot.admin_ids)
-print()
-print('DATABASE:', config.db.database)
-print('DB_HOST:', config.db.db_host)
-print('DB_USER:', config.db.db_user)
-print('DB_PASSWORD:', config.db.db_password)
+# Функция конфигурирования и запуска бота
+async def main():
+    # Загружаем конфиг в переменную config
+    config: Config = load_config()
+    # Инициализируем бот и диспетчер
+    bot: Bot = Bot(token=config.tg_bot.token)
+    dp: Dispatcher = Dispatcher()
+    # Регистрируем роутеры в диспетчере
+    dp.include_router(user_handlers.router)
+    dp.include_router(other_handlers.router)
+    # Пропускаем накопившиеся апдейты и запускаем polling
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
