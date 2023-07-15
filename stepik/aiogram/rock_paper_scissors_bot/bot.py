@@ -3,7 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from config_data.config import Config, load_config
-from handlers import other_handlers, user_handlers
+from handlers import user_handlers, other_handlers
 
 # Инициализируем логгер
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def main():
     # Конфигурируем логгирование
     logging.basicConfig(level=logging.INFO,
-                        format='%(levelname)s:%(linelo)d #%(levelname)-8s '
+                        format='%(filename)s:%(lineno)d #%(levelname)-8s '
                                '[%(asctime)s] - %(name)s - %(message)s')
     # Выводим в консоль информацию о начале запуска бота
     logger.info('Starting bot')

@@ -1,9 +1,9 @@
 from aiogram import Router
 from aiogram.filters import Command, CommandStart, Text
 from aiogram.types import Message
-from ..keyboards.keyboards import game_kb, yes_no_kb
-from ..lexicon.lexicon_ru import LEXICON_RU
-from ..services.services import get_bot_choice, get_winner
+from stepik.aiogram.rock_paper_scissors_bot.keyboards.keyboards import game_kb, yes_no_kb
+from stepik.aiogram.rock_paper_scissors_bot.lexicon.lexicon_ru import LEXICON_RU
+from stepik.aiogram.rock_paper_scissors_bot.services.services import get_bot_choice, get_winner
 
 router: Router = Router()
 
@@ -33,11 +33,9 @@ async def process_no_answer(message: Message):
 
 
 # Этот хэндлер срабатывает на любую из игровых кнопок
-router.message(Text(text=[LEXICON_RU['rock'],
-                          LEXICON_RU['paper'],
-                          LEXICON_RU['scissors']]))
-
-
+@router.message(Text(text=[LEXICON_RU['rock'],
+                           LEXICON_RU['paper'],
+                           LEXICON_RU['scissors']]))
 async def process_game_button(message: Message):
     bot_choice = get_bot_choice()
     await message.answer(text=f'{LEXICON_RU["bot_choice"]} '
