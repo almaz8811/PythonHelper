@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher
-from aiogram.types import BotCommand
+from aiogram.types import Message, BotCommand
+from aiogram.filters import Command, Text
 from config_data.config import Config, load_config
 
 config: Config = load_config()
@@ -16,7 +17,8 @@ async def set_main_menu(bot: Bot):
         BotCommand(command='/help', description='Справка по работе бота'),
         BotCommand(command='/support', description='Поддержка'),
         BotCommand(command='contacts', description='Другие способы связи'),
-        BotCommand(command='/payments', description='Платежи')
+        BotCommand(command='/payments', description='Платежи'),
+        BotCommand(command='/delmenu', description='Удалить меню')
     ]
     await bot.set_my_commands(main_menu_commands)
 
@@ -27,6 +29,15 @@ async def set_main_menu(bot: Bot):
 не обращаясь напрямую к asyncio. Причем, функция эта может быть как синхронной, так и асинхронной, aiogram сам 
 разберется как ее выполнить.
 '''
+
+
+# Этот хэндлер будет срабатывать на /delmenu
+# и удалять кнопку Menu с командами
+@dp.message(Command(commands='delmenu'))
+async def del_main_menu(message: Message, bot: Bot):
+    await bot.delete_my_commands()
+    await message.answer(text='Кнопка Menu удалена')
+
 
 if __name__ == '__main__':
     # Регистрируем асинхронную функцию в диспетчере,
