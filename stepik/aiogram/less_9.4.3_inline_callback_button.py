@@ -31,6 +31,7 @@ async def process_start_command(message: Message):
 # async def process_button_press(callback: CallbackQuery):
 #     await callback.answer()
 
+
 # Этот хэндлер будет срабатывать на апдейт типа CallbackQuery
 # с data 'big_button_1_pressed'
 @dp.callback_query(Text(text=['big_button_1_pressed']))
