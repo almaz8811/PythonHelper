@@ -1,0 +1,5 @@
+### Python template
+/.venv/
+/.idea/
+/__pycache__/
+**/.env
