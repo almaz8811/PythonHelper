@@ -151,7 +151,7 @@ async def process_del_bookmark_press(callback: CallbackQuery):
     users_db[callback.from_user.id]['bookmarks'].remove(int(callback.data[:-3]))
     if users_db[callback.from_user.id]['bookmarks']:
         await callback.message.edit_text(
-            text=LEXICON['bookmarks'],
+            text=LEXICON['/bookmarks'],
             reply_markup=create_edit_keyboard(
                 *users_db[callback.from_user.id]['bookmarks']))
     else:
