@@ -2,6 +2,8 @@
 С версии aiogram 3.0.0b8:
 @dp.message(Text(text='more'))          ->  @dp.message(F.text == 'more')
 @dp.callback_query(Text(text='more'))   ->  @dp.callback_query(F.data == 'more')
+@dp.callback_query(Text(text=['text', 'audio', 'video', 'document', 'photo', 'voice'])) ->
+@dp.callback_query(F.data.in_({'text', 'audio', 'video', 'document', 'photo', 'voice'}))
 """
 import random
 from aiogram import Bot, Dispatcher, F
