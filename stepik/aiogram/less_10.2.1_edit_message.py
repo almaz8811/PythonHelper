@@ -6,10 +6,10 @@
 @dp.callback_query(F.data.in_({'text', 'audio', 'video', 'document', 'photo', 'voice'}))
 """
 import random
+
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.exceptions import TelegramBadRequest
 
 from config_data.config import Config, load_config
 

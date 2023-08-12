@@ -6,11 +6,11 @@
 @dp.callback_query(F.data.in_({'text', 'audio', 'video', 'document', 'photo', 'voice'}))
 """
 from aiogram import Bot, Dispatcher, F
-from aiogram.types import (Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup,
-                           InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo)
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.filters import CommandStart, Command
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.filters import CommandStart
+from aiogram.types import (Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup,
+                           InputMediaPhoto)
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config_data.config import Config, load_config
 

@@ -8,7 +8,7 @@ config: Config = load_config()
 bot: Bot = Bot(token=config.tg_bot.token)
 dp: Dispatcher = Dispatcher()
 
-# Пример 1 - Создаем клавиатуру из 3-х рядов кнопок по 3 кнопки в каждом ряду
+# Пример 1 - Создаем клавиатуру из 3-х рядов кнопок по 3 кнопки в каждом ряду.
 # Создаем объекты кнопок
 button_1: KeyboardButton = KeyboardButton(text='Кнопка 1')
 button_2: KeyboardButton = KeyboardButton(text='Кнопка 2')
