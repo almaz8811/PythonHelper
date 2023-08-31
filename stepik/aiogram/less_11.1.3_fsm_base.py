@@ -111,6 +111,69 @@ async def process_age_sent(message: Message, state: FSMContext):
     await state.set_state(FSMFillForm.fill_gender)
 
 
+# Этот хэндлер будет срабатывать, если во время ввода возраста
+# будет введено что-то некорректное
+@dp.message(StateFilter(FSMFillForm.fill_age))
+async def warning_not_age(message: Message):
+    await message.answer(text='Возраст должен быть целым числом от 4 до 120\n\n'
+                              'Попробуйте еще раз\n\nЕсли вы хотите прервать '
+                              'заполнение анкеты - отправьте команду /cancel')
+
+
+# Этот хэндлер будет срабатывать на нажатие кнопки при
+# выборе пола и переводить в состояние отправки фото
+@dp.callback_query(StateFilter(FSMFillForm.fill_gender), F.text == {'male', 'female', 'undefined_gender'})
+async def process_gender_press(callback: CallbackQuery, state: FSMContext):
+    # Сохраняем пол (callback_data нажатой кнопки) в хранилище по ключу 'gender'
+    await state.update_data(gender=callback.data)
+    # Удаляем сообщение с кнопками, потому что следующий этап - загрузка фото
+    # чтобы у пользователя не было желания тыкать кнопки
+    await callback.message.delete()
+    await callback.message.answer(text='Спасибо! А теперь загрузите, '
+                                       'пожалуйста, ваше фото')
+    # Устанавливаем состояние ожидания загрузки фото
+    await state.set_state(FSMFillForm.upload_photo)
+
+
+# Этот хэндлер будет срабатывать, если во время выбора пола
+# будет введено/отправлено что-то некорректное
+@dp.message(StateFilter(FSMFillForm.fill_gender))
+async def warning_not_gender(message: Message):
+    await message.answer(text='Пожалуйста, воспользуйтесь кнопками '
+                              'при выборе пола\n\nЕсли вы хотите прервать '
+                              'заполнение анкеты - отправьте команду /cancel')
+
+
+# Этот хэндлер будет срабатывать, если отправлено фото
+# и переводить в состояние выбора образования
+@dp.message(StateFilter(FSMFillForm.upload_photo), F.photo[-1].as_('largest_photo'))
+async def process_photo_sent(message: Message, state: FSMContext, largest_photo: PhotoSize):
+    # Сохраняем данные фото (file_unique_id и file_id) в хранилище
+    # по ключам 'photo_unique_id' и 'photo_id'
+    await state.update_data(photo_unique_id=largest_photo.file_unique_id, photo_id=largest_photo.file_id)
+    # Создаем объекты инлайн-кнопок
+    secondary_button = InlineKeyboardButton(text='Среднее', callback_data='secondary')
+    higher_button = InlineKeyboardButton(text='Высшее', callback_data='higher')
+    no_edu_button = InlineKeyboardButton(text='🤷 Нету', callback_data='no_edu')
+    # Добавляем кнопки в клавиатуру (две в одном ряду и одну в другом
+    keyboard: list[list[InlineKeyboardButton]] = [[secondary_button, higher_button],
+                                                  [no_edu_button]]
+    # Создаем объект инлайн-клавиатуры
+    markup = InlineKeyboardMarkup(inlane_keyboard=keyboard)
+    # Отправляем пользователю сообщение с клавиатурой
+    await message.answer(text='Спасибо!\n\nУкажите ваше образование', reply_markup=markup)
+    # Устанавливаем состояние ожидания выбора образования
+    await state.set_state(FSMFillForm.fill_education)
+
+
+# Этот хэндлер будет срабатывать, если во время отправки фото
+# будет введено/отправлено что-то некорректное
+@dp.message(StateFilter(FSMFillForm.upload_photo))
+async def warning_not_photo(message: Message):
+    await message.answer(text='Пожалуйста, на этом шаге отправьте '
+                              'ваше фото\n\nЕсли вы хотите прервать '
+                              'заполнение анкеты - отправьте команду /cancel')
+
 # Этот хэндлер будет срабатывать на любые сообщения, кроме команд,
 # отлавливаемых хэндлерами выше
 @dp.message()
