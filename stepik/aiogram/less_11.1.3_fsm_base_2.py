@@ -14,6 +14,7 @@ storage: MemoryStorage = MemoryStorage()
 
 # Создаем объекты бота и диспетчера
 bot: Bot = Bot(token=config.tg_bot.token)
+dp: Dispatcher = Dispatcher(storage=storage)
 
 # Создаем "базу данных" пользователей
 user_dict: dict[int, dict[str, str | int | bool]] = {}
@@ -23,9 +24,37 @@ user_dict: dict[int, dict[str, str | int | bool]] = {}
 class FSMFillForm(StatesGroup):
     # Создаем экземпляры класса State, последовательно перечисляя возможные состояния,
     # в которых будет находиться бот в разные моменты взаимодействия с пользователем
-    fill_name = State()  # Состояние ожидания ввода имени
-    fill_age = State()  # Состояние ожидания ввода возраста
-    fill_gender = State()  # Состояние ожидания ввода пола
-    upload_photo = State()  # Состояние ожидания загрузки фото
-    fill_education = State()  # Состояние ожидания выбора образования
-    fill_wish_news = State()  # Состояние ожидания выбора получать ли новости
+    fill_name: State = State()  # Состояние ожидания ввода имени
+    fill_age: State = State()  # Состояние ожидания ввода возраста
+    fill_gender: State = State()  # Состояние ожидания ввода пола
+    upload_photo: State = State()  # Состояние ожидания загрузки фото
+    fill_education: State = State()  # Состояние ожидания выбора образования
+    fill_wish_news: State = State()  # Состояние ожидания выбора получать ли новости
+
+
+# Этот хэндлер будет срабатывать на команду /start вне состояний
+# и предлагать перейти к заполнению анкеты, отправив команду /fillform
+@dp.message(CommandStart(), StateFilter(default_state))
+async def process_start_command(message: Message):
+    await message.answer(text='Этот бот демонстрирует работу FSM\n\n'
+                              'Чтобы перейти к заполнению анкеты - '
+                              'отправьте команду /fillform')
+
+
+# Этот хэндлер будет срабатывать на команду /cancel в состоянии
+# по умолчанию и сообщать, то эта команда работает внутри машины состояний
+@dp.message(Command(commands='cancel'), StateFilter(default_state))
+async def process_cancel_command(message: Message):
+    await message.answer('Отменять нечего. Ввне машины состояний\n\n'
+                         'Чтобы перейти к заполнению анкеты - '
+                         'отправьте команду /fillform')
+
+# Этот хэндлер будет срабатывать на команду /cancel в любых состояниях,
+# кроме состояния по умолчанию, и отключать машину состояний
+@dp.message(Command(commands='cancel'), ~StateFilter(default_state))
+async def process_cancel_command_state(message: Message, state: FSMContext):
+    await message.answer('Вы вышли из машины состояний\n\n'
+                         'Чтобы снова перейти к заполнению анкеты - '
+                         'отправьте команду /fillform')
+    # Сбрасывает состояние и очищаем данные, полученные внутри состояний
+    await state.clear()
