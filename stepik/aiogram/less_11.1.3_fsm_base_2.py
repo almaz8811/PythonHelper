@@ -49,6 +49,7 @@ async def process_cancel_command(message: Message):
                          'Чтобы перейти к заполнению анкеты - '
                          'отправьте команду /fillform')
 
+
 # Этот хэндлер будет срабатывать на команду /cancel в любых состояниях,
 # кроме состояния по умолчанию, и отключать машину состояний
 @dp.message(Command(commands='cancel'), ~StateFilter(default_state))
@@ -59,9 +60,57 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
     # Сбрасывает состояние и очищаем данные, полученные внутри состояний
     await state.clear()
 
+
 # Этот хэндлер будет срабатывать на команду /fillform и переводить бота в состояние ожидания ввода имени
 @dp.message(Command(commands='fillform'), StateFilter(default_state))
 async def process_fillform_command(message: Message, state: FSMContext):
     await message.answer(text='Пожалуйста, ведите ваше имя')
     # Устанавливаем состояние ожидания ввода имени
     await state.set_state(FSMFillForm.fill_name)
+
+
+# Этот хэндлер будет срабатывать, если введено корректное имя
+# и переводить в состояние ожидания ввода возраста
+@dp.message(StateFilter(FSMFillForm.fill_name), F.text.isalpha())
+async def process_name_sent(message: Message, state: FSMContext):
+    # Сохраняем введенное имя в хранилище по ключу 'name'
+    await state.update_data(name=message.text)
+    await message.answer(text='Спасибо!\n\n А теперь введите ваш возраст')
+    # Устанавливаем состояние ожидания ввод возраста
+    await state.set_state(FSMFillForm.fill_age)
+
+
+# Этот хэндлер будет срабатывать, если во время ввода имени будет введено что-то некорректное
+@dp.message(StateFilter(FSMFillForm.fill_name))
+async def warning_not_name(message: Message):
+    await message.answer(text='То, что вы отправили не похоже на имя\n\n'
+                              'Если вы хотите прервать заполнение анкеты - '
+                              'отправьте команду /cancel')
+
+
+# Этот хэндлер будет срабатывать, если введен корректный возраст
+# и переводить в состояние выбора пола
+@dp.message(StateFilter(FSMFillForm.fill_age), lambda x: x.text.isdigit() and 4 <= int(x.text) <= 120)
+async def process_age_sent(message: Message, state: FSMContext):
+    # Сохраняем возраст в хранилище по ключу 'age'
+    await state.update_data(age=message.text)
+    # Создаем объекты инлайн-кнопок
+    male_button = InlineKeyboardButton(text='Мужской ♂', callback_data='male')
+    female_button = InlineKeyboardButton(text='Женский ♀', callback_data='female')
+    undefined_button = InlineKeyboardButton(text='🤷 Пока не ясно', callback_data='undefined_gender')
+    # Добавляем кнопки в клавиатуру (две в одном ряду и одну в другом)
+    keyboard: list[list[InlineKeyboardButton]] = [[male_button, female_button], [undefined_button]]
+    # Создаем объект инлайн-клавиатуры
+    markup = InlineKeyboardMarkup(inline_keyboard=keyboard)
+    # Отправляем пользователю сообщение с клавиатурой
+    await message.answer(text='Спасибо!\n\nУкажите ваш пол', reply_markup=markup)
+    # Устанавливаем состояние ожидания выбора пола
+    await state.set_state(FSMFillForm.fill_gender)
+
+
+# Этот хэндлер будет срабатывать, если во время ввода возраста будет введено что-то некорректное
+@dp.message(StateFilter(FSMFillForm.fill_age))
+async def warning_not_age(message: Message):
+    await message.answer(text='Возраст должен быть целым числом от 4 до 120\n\n'
+                              'Попробуйте еще раз\n\nЕсли вы хотите прервать '
+                              'заполнение анкеты - отправьте команду /cancel')
