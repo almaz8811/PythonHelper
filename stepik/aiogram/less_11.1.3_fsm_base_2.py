@@ -45,7 +45,7 @@ async def process_start_command(message: Message):
 # по умолчанию и сообщать, то эта команда работает внутри машины состояний
 @dp.message(Command(commands='cancel'), StateFilter(default_state))
 async def process_cancel_command(message: Message):
-    await message.answer('Отменять нечего. Ввне машины состояний\n\n'
+    await message.answer('Отменять нечего. Вы вне машины состояний\n\n'
                          'Чтобы перейти к заполнению анкеты - '
                          'отправьте команду /fillform')
 
@@ -58,3 +58,10 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
                          'отправьте команду /fillform')
     # Сбрасывает состояние и очищаем данные, полученные внутри состояний
     await state.clear()
+
+# Этот хэндлер будет срабатывать на команду /fillform и переводить бота в состояние ожидания ввода имени
+@dp.message(Command(commands='fillform'), StateFilter(default_state))
+async def process_fillform_command(message: Message, state: FSMContext):
+    await message.answer(text='Пожалуйста, ведите ваше имя')
+    # Устанавливаем состояние ожидания ввода имени
+    await state.set_state(FSMFillForm.fill_name)
