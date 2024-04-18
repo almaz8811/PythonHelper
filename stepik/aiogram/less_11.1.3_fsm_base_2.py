@@ -45,10 +45,9 @@ async def process_start_command(message: Message):
 # по умолчанию и сообщать, то эта команда работает внутри машины состояний
 @dp.message(Command(commands='cancel'), StateFilter(default_state))
 async def process_cancel_command(message: Message):
-    await message.answer('Отменять нечего. Вы вне машины состояний\n\n'
+    await message.answer('Отменять нечего. Ввне машины состояний\n\n'
                          'Чтобы перейти к заполнению анкеты - '
                          'отправьте команду /fillform')
-
 
 # Этот хэндлер будет срабатывать на команду /cancel в любых состояниях,
 # кроме состояния по умолчанию, и отключать машину состояний
@@ -59,4 +58,3 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
                          'отправьте команду /fillform')
     # Сбрасывает состояние и очищаем данные, полученные внутри состояний
     await state.clear()
-
