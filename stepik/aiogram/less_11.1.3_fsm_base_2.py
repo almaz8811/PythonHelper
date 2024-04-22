@@ -167,3 +167,91 @@ async def warning_not_photo(message: Message):
     await message.answer(text='Пожалуйста, на этом шаге отправьте '
                               'ваше фото\n\nЕсли вы хотите прервать '
                               'заполнение анкеты - отправьте команду /cancel')
+
+
+# Этот хэндлер будет срабатывать, если выбрано образование
+# и переводить в состояние согласия получать новости
+@dp.callback_query(StateFilter(FSMFillForm.fill_education), F.data.in_(['secondary', 'higher', 'no_edu']))
+async def process_education_press(callback: CallbackQuery, state: FSMContext):
+    # Сохраняем данные об образовании по ключу 'education'
+    await state.update_data(education=callback.data)
+    # Создаем объекты инлайн-кнопок
+    yes_news_button = InlineKeyboardButton(text='Да', callback_data='yes_news')
+    no_news_button = InlineKeyboardButton(text='Нет, спасибо', callback_data='no_news')
+    # Добавляем кнопки в клавиатуру в один ряд
+    keyboard: list[list[InlineKeyboardButton]] = [[yes_news_button], [no_news_button]]
+    # Создаем объект инлайн-клавиатуры
+    markup = InlineKeyboardMarkup(inline_keyboard=keyboard)
+    # Редактируем предыдущее сообщение с кнопками, отправляя
+    # новый текст и новую клавиатуру
+    await callback.message.edit_text(text='Спасибо!\n\nОстался последний шаг.\n'
+                                          'Хотели бы вы получать новости?', reply_markup=markup)
+    # Устанавливаем состояние ожидания выбора получать новости или нет
+    await state.set_state(FSMFillForm.fill_wish_news)
+
+
+# Этот хэндлер будет срабатывать, если во время выбора образования
+# будет введено\отправлено что-то некорректное
+@dp.message(StateFilter(FSMFillForm.fill_education))
+async def warning_not_education(message: Message):
+    await message.answer(text='Пожалуйста, пользуйтесь кнопками при выборе образования\n\n'
+                              'Если вы хотите прервать заполнение анкеты - отправьте '
+                              'команду /cancel')
+
+
+# Этот хэндлер будет срабатывать на выбор получать или
+# не получать новости и выводить из машины состояний
+@dp.callback_query(StateFilter(FSMFillForm.fill_wish_news), F.date.in_(['yes_news', 'no_news']))
+async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
+    # Сораняем данные о получении новостей по ключу 'wish_news'
+    await state.update_data(wish_news=callback.data == 'yes_news')
+    # Добавляем в "базу данных" анкету пользователя
+    # по ключу id пользователя
+    user_dict[callback.from_user.id] = await state.get_data()
+    # Завершаем машину состояний
+    await state.clear()
+    # Отправляем в чат сообщение о выходе из машины состояний
+    await callback.message.answer(text='Спасибо! Ваши данные сохранены!\n\n'
+                                       'Вы вышли из машины состояний')
+    # Отправляем в чат сообщение с предложением посмотреть свою анкету
+    await callback.message.answer(text='Чтобы посмотреть данные вашей '
+                                       'анкеты - отправьте команду /showdata')
+
+
+# Этот хэндлер будет срабатывать, если во время согласия на получение
+# новостей будет введено\отправлено чтото некорректное
+@dp.message(StateFilter(FSMFillForm.fill_wish_news))
+async def warning_not_wish_news(message: Message):
+    await message.answer(text='Пожалуйста, воспользуйтесь кнопками!\n\n'
+                              'Если вы хотите прервать заполнение анкеты - '
+                              'отправьте команду /cancel')
+
+
+# Этот хэндлер будет срабатывать на отправку команды /showdata
+# и отправлять в чат данные анкеты, либо сообщение об отсутствии данных
+@dp.message(Command(commands='showdata'), StateFilter(default_state))
+async def process_showdata_command(message: Message):
+    # Отправляем пользователю анкету, если она есть в "базе данных"
+    if message.from_user.id in user_dict:
+        await message.answer_photo(photo=user_dict[message.from_user.id]['photo_id'],
+                                   caption=f'Имя: {user_dict[message.from_user.id]['name']}\n'
+                                           f'Возраст: {user_dict[message.from_user.id]["age"]}\n'
+                                           f'Пол: {user_dict[message.from_user.id]['gender']}\n'
+                                           f'Образование: {user_dict[message.from_user.id]['education']}\n'
+                                           f'Получать новости: {user_dict[message.from_user.id]['wash_news']}')
+    else:
+        # Если анкеты пользователя нет - предлагаем заполнить
+        await message.answer(text='Вы еще не заполняли анкету. Чтобы приступить - '
+                                  'отправьте команду /fillform')
+
+
+# Этот хэндлер будет срабатывать на любые состояния, кроме тех
+# для которых есть отдельные хэндлеры, вне состояний
+@dp.message(StateFilter(default_state))
+async def send_echo(message: Message):
+    await message.reply(text='Извините, я не понимаю')
+
+
+# Запускаем поллинг
+if __name__ == '__main__':
+    dp.run_polling(bot)
