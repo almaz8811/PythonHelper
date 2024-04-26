@@ -2,15 +2,18 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage, Redis
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message, PhotoSize
 
 from config_data.config import Config, load_config
 
 config: Config = load_config()
 
+# Инициализируем Redis
+redis = Redis(host='localhost')
+
 # Инициализируем хранилище (создаем экземпляр класса MemoryStorage)
-storage: MemoryStorage = MemoryStorage()
+storage: RedisStorage = RedisStorage(redis=redis)
 
 # Создаем объекты бота и диспетчера
 bot: Bot = Bot(token=config.tg_bot.token)
@@ -201,9 +204,10 @@ async def warning_not_education(message: Message):
 
 # Этот хэндлер будет срабатывать на выбор получать или
 # не получать новости и выводить из машины состояний
-@dp.callback_query(StateFilter(FSMFillForm.fill_wish_news), F.date.in_(['yes_news', 'no_news']))
+@dp.callback_query(StateFilter(FSMFillForm.fill_wish_news), F.data.in_(['yes_news', 'no_news']))
 async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
-    # Сораняем данные о получении новостей по ключу 'wish_news'
+    # Сохраняем данные о получении новостей по ключу 'wish_news'
+    print(callback.data)
     await state.update_data(wish_news=callback.data == 'yes_news')
     # Добавляем в "базу данных" анкету пользователя
     # по ключу id пользователя
