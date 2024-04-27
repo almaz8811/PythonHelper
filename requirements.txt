@@ -1,6 +1,6 @@
 pytest==7.2.2
-environs==9.5.0
-aiogram==3.0.0b9
+environs==11.0.0
+aiogram==3.4.1
 requests==2.31.0
 PyQt6==6.5.0
 Pyrogram==2.0.106
