@@ -249,7 +249,7 @@ async def process_showdata_command(message: Message):
 # для которых есть отдельные хэндлеры, вне состояний
 @dp.message(StateFilter(default_state))
 async def send_echo(message: Message):
-    await message.reply(text='Извините, я не понимаю')
+    await message.reply(text='Извините, я не понимаю...')
 
 
 # Запускаем поллинг
