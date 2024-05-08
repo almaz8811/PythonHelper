@@ -21,8 +21,20 @@ async def cmd_start(message: Message):
     await message.answer('Hello!')
 
 
+# Хэндлер на команду /test1
+@dp.message(Command('test1'))
+async def cmd_test1(message: Message):
+    await message.reply('Test 1')
+
+
+# Хэндлер на команду /test2
+async def cmd_test2(message: Message):
+    await message.reply('Test 2')
+
+
 # Запуск процесса поллинга новых апдейтов
 async def main():
+    dp.message.register(cmd_test2, Command('test2'))
     await dp.start_polling(bot)
 
 
