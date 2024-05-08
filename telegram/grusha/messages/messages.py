@@ -2,6 +2,7 @@ import logging
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, FSInputFile, URLInputFile, BufferedInputFile
 from aiogram.filters.command import Command, CommandObject
+from aiogram.utils.media_group import MediaGroupBuilder
 from config_data.config import Config, load_config
 
 config: Config = load_config()
@@ -97,6 +98,18 @@ async def download_sticker(message: Message, bot: Bot):
     await bot.download(message.sticker,
                        destination=f'/tmp/{message.sticker.file_id}.webp')
 
+
+# Отправка альбома с медиа файлами
+@dp.message(Command('album'))
+async def cmd_album(message: Message):
+    album_builder = MediaGroupBuilder(caption='Общая подпись для будущего альбома')
+    album_builder.add(type='photo',
+                      media=FSInputFile('image_from_pc.jpg'))
+    # Если мы сразу знаем тип, то вместо общего add можно сразу вызвать add_<тип>
+    # Для ссылок или file_id достаточно сразу указать значение
+    album_builder.add_photo(media='https://picsum.photos/seed/groosha/400/300')
+    album_builder.add_photo(media='<file_id>')
+    await message.answer_media_group(media=album_builder.build())
 
 if __name__ == '__main__':
     dp.run_polling(bot)
