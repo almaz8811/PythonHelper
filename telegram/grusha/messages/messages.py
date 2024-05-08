@@ -1,5 +1,5 @@
 import logging
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from aiogram.filters.command import Command, CommandObject
 from config_data.config import Config, load_config
@@ -38,6 +38,18 @@ async def cmd_args(message: Message, command: CommandObject):
     await message.answer('Таймер добавлен!\n'
                          f'Время: {delay_time}\n'
                          f'Текст: {text_to_send}')
+
+
+# Заставим бота реагировать на команды с другими префиксами
+@dp.message(Command('custom1', prefix='%'))
+async def cmd_custom1(message: Message):
+    await message.answer('Вижу команду!')
+
+
+# То же самое, с несколькими префиксами
+@dp.message(Command('custom2', prefix='/!'))
+async def cmd_custom2(message: Message):
+    await message.answer('И это тоже команда!')
 
 
 if __name__ == '__main__':
