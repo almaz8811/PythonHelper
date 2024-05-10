@@ -135,7 +135,7 @@ async def cmd_numbers_fab(message: Message):
 
 # Вариант 2 - разделить на 2 разных хэндлера
 
-# Нажатие на одну из кнопокЖ -2, -1, +1, +2
+# Нажатие на одну из кнопок -2, -1, +1, +2
 @dp.callback_query(NumbersCallbackFactory.filter(F.action == 'change'))
 async def callbacks_num_change_fab(callback: CallbackQuery, callback_data: NumbersCallbackFactory):
     # Текущее значение
