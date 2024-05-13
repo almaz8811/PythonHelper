@@ -1,12 +1,10 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.enums.dice_emoji import DiceEmoji
 from aiogram.types import Message
 from aiogram.filters import Command
 
-from telegram.grusha.filters.filters.chat_type import ChatTypeFilter
-
 router = Router()
-router.message.filter(ChatTypeFilter(chat_type=['group', 'supergroup']))
+router.message.filter(F.chat.type.in_({'group', 'supergroup'}))
 
 
 @router.message(Command('dice'))
